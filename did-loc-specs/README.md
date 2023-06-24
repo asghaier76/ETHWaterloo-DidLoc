@@ -56,3 +56,9 @@ The default DID document for an `did:loc<Ethereum address>` on mainnet, e.g. `di
 
 ### Read (Resolve)
 Resolving a DID implies the act of fetching the DID doc registered on chain. The resolver when queried with a DID returns the associated DID doc. A query is sent out to fetch the registered DID record from the chain which if successful will contain the ipfs hash of the DID doc, which can then be retrieved from the IPFS network that will contain the entire DID doc content.
+
+### Update 
+The basic update operation involves updating the ipfs hash of the DID doc on chain, which will be a different DID doc that has been stored on IPFS. So the process will start with the client generating the new version of the DID doc, uploading it to IPFS and obtaining the ipfs hash. Then the client invokes the update function on the regitry contract to update the DID doc ipfs hash on chain. The update operation is guraded so that only the controller is able to perform that. The motivation behind using the approach of storing the DID doc JSON object on IPFS and anchoring that on-chain using the IPFS hash is to make the gas usage almost identical for different update operations, such as adding an authoirzation key, a veirifcation method or a point of interest.
+
+### Delete(Deactivate)
+The controller of DID doc holds the authority to delete the DID doc from being available on chain, while the DID doc as a JSON object still lives on IPFS, but the source of truth is the on-chain data.
