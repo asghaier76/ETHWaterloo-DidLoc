@@ -2,23 +2,23 @@
     {
           "goerli": {
                 "URL": "https://goerli.infura.io/v3/",
-                "CONTRACT_ADDRESS": "",
-                "NETWORK_ID": "5"
+                "CONTRACT_ADDRESS": "0xdE86C611a89E52e5CE349D77bD8f1Dd7452692d2",
+                "NETWORK_ID": "0x5"
           },
           "mainnet": {
                 "URL": "https://mainnet.infura.io/v3/",
                 "CONTRACT_ADDRESS": "",
-                "NETWORK_ID": "1" 
+                "NETWORK_ID": "0x1" 
           },
           "mumbai": {
                 "URL": "https://matic-mumbai.chainstacklabs.com",
-                "CONTRACT_ADDRESS": "",
-                "NETWORK_ID": "80001"
+                "CONTRACT_ADDRESS": "0x3161665c00d107Ddbdc8A440C5DfC7B81DC182BD",
+                "NETWORK_ID": "0x13881"
           },
           "matic": {
                 "URL": "https://rpc-mainnet.maticvigil.com/",
                 "CONTRACT_ADDRESS": "",
-                "NETWORK_ID": "137" 
+                "NETWORK_ID": "0x89" 
           }
     }
 ]

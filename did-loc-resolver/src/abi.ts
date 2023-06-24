@@ -1,4 +1,4 @@
-[
+export const registryAbi = [
 	{
 		"anonymous": false,
 		"inputs": [
