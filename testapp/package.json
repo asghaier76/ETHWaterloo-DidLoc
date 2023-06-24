@@ -1,0 +1,14 @@
+{
+  "name": "testapp",
+  "version": "1.0.0",
+  "description": "Simple app testing Location DID method",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ahmad Sghaier",
+  "license": "ISC",
+  "dependencies": {
+    "paillier-bigint": "^3.4.1"
+  }
+}

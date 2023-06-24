@@ -4,3 +4,4 @@ did-loc-resolver/lib
 did-loc-registrar/node_modules/
 did-loc-registrar/package-lock.json
 did-loc-registrar/lib
+testapp/node_modules/

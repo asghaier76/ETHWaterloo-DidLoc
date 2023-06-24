@@ -60,5 +60,69 @@ Resolving a DID implies the act of fetching the DID doc registered on chain. The
 ### Update 
 The basic update operation involves updating the ipfs hash of the DID doc on chain, which will be a different DID doc that has been stored on IPFS. So the process will start with the client generating the new version of the DID doc, uploading it to IPFS and obtaining the ipfs hash. Then the client invokes the update function on the regitry contract to update the DID doc ipfs hash on chain. The update operation is guraded so that only the controller is able to perform that. The motivation behind using the approach of storing the DID doc JSON object on IPFS and anchoring that on-chain using the IPFS hash is to make the gas usage almost identical for different update operations, such as adding an authoirzation key, a veirifcation method or a point of interest.
 
+The most improtant update operation is the process of adding a service endpoint, which in did:loc method represents the process of adding a new mapping of a POI in the DID doc. The foramtting for adding a service point is based on the following:
+```json
+{
+  "@context": "https://www.w3.org/ns/did/v1",
+  "id": "did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141",
+  "verificationMethod": [
+    {
+      "id": "did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141#controller",
+      "type": "EcdsaSecp256k1RecoveryMethod2020",
+      "controller": "did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141",
+      "blockchainAccountId": "eip155:1:0x91597CDbfEF4F72Bc18E98C60f723599b1962141"
+    }
+  ],
+  "authentication": ["did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141#controller"],
+  "assertionMethod": ["did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141#controller"],
+  "service": [{
+    "id": "did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141#poi2",
+    "type": "PointOfInterest",
+        "homomorphicScheme": "paillier",
+        "publicKey": {
+            "n": "161942003092727024729940643423892518719734535475906214886415006453054027938509788881836820057219155705764868406946789063388792703886592953702361677095663329274148205007962426131927943275586699046057318903735723017809023333627009453733400271369020199023962661807917079834869851507619394275378575039106923517147n",
+            "g": "23688197298216943516510038320994209492722280219639890470188123289407199254316846950778734769648565262510361992118721665148624845900870781188625361907387058599024343540017801958801852787768931611732763822093651831233880488561902303988683946658662455017264695319105904179739446223059332026677656891024863865211020741904557940430671344629045394119253214654660872907574113990073382027283515571739684871247554886786639471982534050354287271830138416012354978231295179336971527290091010015528914151811564252805090530679113237660570158797067530495336529073377141119442208411712190734916268573919110856442805760428514191686979n"
+        },
+    "serviceEndpoint": {
+      "xyFactor" : "Enc(x^2 + y^2)",
+      "xFactor" : "Enc(-2*x)",
+      "yFactor" : "Enc(-2*y)",
+      "radius" : "r"
+    }
+}
+```
+The formating for any added service endpoint with type `PointOfInterest` should be either the JSON object of the POI or a dweb link for the ipfs hash CID v1 if stored on IPFS.
+```
+BASE_URL+DID_IDENTIFIER+POI_INDEX 
+```
+In case of using IPFS for storing the POI details then the recommended option is to use CIDv1 representation.
+
 ### Delete(Deactivate)
 The controller of DID doc holds the authority to delete the DID doc from being available on chain, while the DID doc as a JSON object still lives on IPFS, but the source of truth is the on-chain data.
+
+## Point Of Interest Format and Calculation
+As mentioned, the main motivation behind this method is to ensure capability of sharing wallet related location information but while still maintaining wallet holder privacy. To ensure that, homoprohic encryption techniques are used to encrypt the location information store it as POIs in public ledger and enable communication between two entities to verify locations and prove proximity or a POI being in a geofenced area. One of the suggested approach for the homomorphic encryption and operatiosn is based on the [Paillier cryptosystem](https://link.springer.com/content/pdf/10.1007/3-540-48910-X_16.pdf).
+Any POI is represented as a 4-tuple made of the encrypted value of calculating the user location coordinates ``` (x, y) ``` as in  
+```math
+ Enc(x^2 + y^2) , Enc(-2*x) , Enc(-2*y) , r  
+```
+where the encryption is made by the DID controller homomorphoic public key specified in the service section. 
+In terms of storing, the POI is stored as a JSON document using the following format.
+```json
+{
+  "xyFactor" : "Enc(x^2 + y^2)",
+  "xFactor" : "Enc(-2*x)",
+  "yFactor" : "Enc(-2*y)",
+  "radius" : "r"
+}
+```
+For any interested party in a wallet POIs and its location and proximity, an entity can first resolve the DID doc of the wallet address which will provide the DID doc with a list of services endpoints. By filtering for only service endpoints of type `PointOfInterest`, the inqurying entity can find a list of POIs and the endpoints to those POIs which each will resolve to a POI JSON object that includes the different homomorphic encrypted values of that POI coordinates.
+As the entity obtains the POI object, the following calculations will need to be performed 
+- First the entity will compare the radius value `r` to its intention, if the radius value is too large or too small. For example, an entity that want to check certain wallet proximity in a conference won't be interested in POI that has r set to 100's of meters or more. Also, an entity that want to send a geofenced advertisement to a wallet won't be interested in a POI with a radius value of few meters.
+- The inquiring the entity will calculate using the controller public key the following encrypted values: ``` Enc(u^2 + v^2), where (u , v) ``` is the center of the inquiring entity circle of geofenced area for example. The inquiring entity also need to calculate ``` (Enc(-2*x))^u and (Enc(-2*y))^v ```.
+- The inquiring entity finally, calculates
+```math
+Enc(d) = ( Enc(x^2 + y^2) * Enc(u^2 + v^2) ) * ( (Enc(-2*x))^u * (Enc(-2*y))^v )
+```
+this will represent the distance d encrypted using the controller homomorphic scheme public key.
+- The inquiring entity communicates the last value to the wallet of the controller and then the controller wallet using the private key can decrypt and find the value d. If d is less than r, then the associated action is performed, e.g., send a location-based notification to the 2nd party wallet or start a wallet to wallet chat.
