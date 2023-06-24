@@ -54,3 +54,5 @@ The default DID document for an `did:loc<Ethereum address>` on mainnet, e.g. `di
 }
 ```
 
+### Read (Resolve)
+Resolving a DID implies the act of fetching the DID doc registered on chain. The resolver when queried with a DID returns the associated DID doc. A query is sent out to fetch the registered DID record from the chain which if successful will contain the ipfs hash of the DID doc, which can then be retrieved from the IPFS network that will contain the entire DID doc content.
