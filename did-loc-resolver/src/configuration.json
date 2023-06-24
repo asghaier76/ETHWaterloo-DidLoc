@@ -1,0 +1,24 @@
+[
+    {
+          "goerli": {
+                "URL": "https://goerli.infura.io/v3/",
+                "CONTRACT_ADDRESS": "",
+                "NETWORK_ID": "5"
+          },
+          "mainnet": {
+                "URL": "https://mainnet.infura.io/v3/",
+                "CONTRACT_ADDRESS": "",
+                "NETWORK_ID": "1" 
+          },
+          "mumbai": {
+                "URL": "https://matic-mumbai.chainstacklabs.com",
+                "CONTRACT_ADDRESS": "",
+                "NETWORK_ID": "80001"
+          },
+          "matic": {
+                "URL": "https://rpc-mainnet.maticvigil.com/",
+                "CONTRACT_ADDRESS": "",
+                "NETWORK_ID": "137" 
+          }
+    }
+]
