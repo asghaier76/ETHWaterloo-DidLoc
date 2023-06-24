@@ -45,7 +45,7 @@ contract LocationDidRegistry is Ownable {
     /**
      *@dev Register a new Location DID
      *@param _address - Contoller Address that will refer the DID doc
-     *@param _doc - A string represents the ipfs hash of the stored DDO
+     *@param _ddoHash - A string represents the ipfs hash of the stored DDO
      */
 
     function registerDID(address _address, string memory _ddoHash) external returns (bool) {
@@ -61,13 +61,13 @@ contract LocationDidRegistry is Ownable {
      *@param _address - Address of the DID Subject
      */
 
-    function getDID(address _id) public view returns (string memory) {
-        return locationDIDs[_id].ddoHash;
+    function getDID(address _address) public view returns (string memory) {
+        return locationDIDs[_address].ddoHash;
     }
 
     /**
      *@dev To Update the Location DID 
-     *@param _id - Address of Subject of DID
+     *@param _address - Address of Subject of DID
      *@param _ddoHash - DID doc IPFS Hash
      */
 
@@ -83,7 +83,8 @@ contract LocationDidRegistry is Ownable {
      */
 
     function deleteDID(address _address) external onlyController(_address) returns (bool) {
-        delete locationDIDs[_id];
+        delete locationDIDs[_address];
         emit DIDDeleted(_address);
+        return true;
     }
 }
