@@ -29,3 +29,28 @@ The `ethereum-address` are case-insensitive. It is assumed that the DID is ancho
     did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141
 For the polygon did-loc representation, the MSI (Method Specific Identifier) is an ethereum address, prefixed with the chain name for Polygon mainnet or testnet, `matic` or `mumbai` respectively.
 
+### Identifier Controller
+By default, each identifier is controlled by itself, and each identifier can only be controlled by a single account at any given time. The controller is the address corresponding to the private key that is supposed to be used to submit all transactions against the registry contract for performing operations of DID Register, Update and Delete and it is expected that the controller account should have enough balance to pay for gas fees transactions on the targeted network.
+
+## CRUD Operation Definitions
+### Create (Register)
+In order to create a `loc` DID, first an Ethereum address, i.e., public/private key pair, needs to be either generated or be held by the user in a wallet of choice. At this step, there has been no interaction with the registry contract on the targeted EVM network. The registration operation happens at the time the controller, which is the same the DID identifier, issues the register command to the registry smart contract.
+The client side should first generate the DID Doc based on the format described in this DID method document, the client will submit the DID document and store it on IFPS network and obtain the CID v1. Then the client will invoke the register DID function on the registry smart contract by passing the identifier (controller address) and the ipfs hash.
+The default DID document for an `did:loc<Ethereum address>` on mainnet, e.g. `did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141` will look like this:
+```json
+{
+  "@context": "https://www.w3.org/ns/did/v1",
+  "id": "did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141",
+  "verificationMethod": [
+    {
+      "id": "did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141#controller",
+      "type": "EcdsaSecp256k1RecoveryMethod2020",
+      "controller": "did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141",
+      "blockchainAccountId": "eip155:1:0x91597CDbfEF4F72Bc18E98C60f723599b1962141"
+    }
+  ],
+  "authentication": ["did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141#controller"],
+  "assertionMethod": ["did:loc:0x91597CDbfEF4F72Bc18E98C60f723599b1962141#controller"]
+}
+```
+
