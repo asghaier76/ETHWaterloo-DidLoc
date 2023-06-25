@@ -100,10 +100,13 @@ async function resolve(did: string): Promise<DIDResolutionResult> {
   //       err = `resolver_error:  DID document invalid!`;
   // }
 
-  const ipfsLink = `https://${ddo}.ipfs.dweb.link/`;
+  const ipfsLink = `https://green-delightful-nightingale-323.mypinata.cloud/ipfs/${ddo}`;
   let didDoc: any = '';
   try {
-    didDoc = await axios.get(ipfsLink);
+    const response = await axios.get(ipfsLink);
+    console.log('response')
+    console.log(response.data)
+    didDoc = response.data;
   } catch (error) {
     err = `resolver_error:  DID document not found!`;
   }
@@ -121,32 +124,32 @@ async function resolve(did: string): Promise<DIDResolutionResult> {
   const didDocumentMetadata = {};
   let didDocument: DIDDocument | null = null;
 
-  if (ethAddress) {
-    const chainId = (await provider.getNetwork()).chainId;
-    const blockchainAccountId = `${ethAddress}@eip155:${chainId}`;
+//   if (ethAddress) {
+//     const chainId = (await provider.getNetwork()).chainId;
+//     const blockchainAccountId = `${ethAddress}@eip155:${chainId}`;
 
-    // setup default did doc
-    didDocument = {
-      id: did,
-      //   service: [
-      //     {
-      //       id: `${did}#Web3PublicProfile-${postfix}`,
-      //       type: 'Web3PublicProfile',
-      //       serviceEndpoint: ethAddress,
-      //     },
-      //   ],
-      verificationMethod: [
-        {
-          id: `${did}#controller`,
-          type: 'EcdsaSecp256k1RecoveryMethod2020',
-          controller: did,
-          blockchainAccountId,
-        },
-      ],
-      authentication: [`${did}#controller`],
-      assertionMethod: [`${did}#controller`],
-    };
-  }
+//     // setup default did doc
+//     didDocument = {
+//       id: did,
+//       //   service: [
+//       //     {
+//       //       id: `${did}#Web3PublicProfile-${postfix}`,
+//       //       type: 'Web3PublicProfile',
+//       //       serviceEndpoint: ethAddress,
+//       //     },
+//       //   ],
+//       verificationMethod: [
+//         {
+//           id: `${did}#controller`,
+//           type: 'EcdsaSecp256k1RecoveryMethod2020',
+//           controller: did,
+//           blockchainAccountId,
+//         },
+//       ],
+//       authentication: [`${did}#controller`],
+//       assertionMethod: [`${did}#controller`],
+//     };
+//   }
 
   //     const services = (await getPoiRecord<ServiceEndpoint[]>(poiResolver, 'poi.service')) || []
   //     if (services) {
@@ -160,7 +163,7 @@ async function resolve(did: string): Promise<DIDResolutionResult> {
 
   if (err) {
     return {
-      didDocument,
+      didDocument: null,
       didDocumentMetadata,
       didResolutionMetadata: {
         error: Errors.notFound,
@@ -169,7 +172,7 @@ async function resolve(did: string): Promise<DIDResolutionResult> {
     };
   } else {
     return {
-      didDocument,
+      didDocument: didDoc,
       didDocumentMetadata,
       didResolutionMetadata: { contentType },
     };

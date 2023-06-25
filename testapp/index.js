@@ -21,19 +21,17 @@ async function paillierTest () {
   const xyFactor = publicKey.encrypt(x**2n+y**2n);
   const xFactor = publicKey.encrypt(-2n*x);
   const yFactor = publicKey.encrypt(-2n*y);
-  console.log(xyFactor) 
-  console.log(xFactor) 
-  console.log(yFactor)
   
 // encryption of coordinates of second entity
   const uvFactor = publicKey.encrypt(u**2n+v**2n);
   const xyuvFactor = publicKey.addition(xFactor**u, yFactor**v);
-  console.log(uvFactor) 
-  console.log(xyuvFactor) 
 
   const encDistance = publicKey.addition(xyFactor , uvFactor , xyuvFactor);
-  console.log(encDistance)
-  console.log(privateKey.decrypt(encDistance)) 
+  console.log('Encrypted Distance Squared: ',encDistance)
+  const dSquared = privateKey.decrypt(encDistance);
+  const d = Math.sqrt(dSquared.toString(10));
+  console.log('Distance: ',d)
+
 
 }
 paillierTest()

@@ -20,12 +20,12 @@ const registryConfig: Record<string, any> = {
       NETWORK_ID: '0x1',
     },
     mumbai: {
-      rpcUrl: 'https://matic-mumbai.chainstacklabs.com',
+      rpcUrl: 'https://polygon-mumbai.infura.io/v3/',
       contractAddress: '0x3161665c00d107Ddbdc8A440C5DfC7B81DC182BD',
       NETWORK_ID: '0x13881',
     },
     matic: {
-      rpcUrl: 'https://rpc-mainnet.maticvigil.com/',
+      rpcUrl: 'https://polygon-matic.infura.io/v3/',
       contractAddress: '',
       NETWORK_ID: '0x89',
     },

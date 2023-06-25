@@ -9,6 +9,7 @@
   "author": "Ahmad Sghaier",
   "license": "ISC",
   "dependencies": {
+    "did-resolver": "^4.1.0",
     "paillier-bigint": "^3.4.1"
   }
 }
